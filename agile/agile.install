@@ -10,7 +10,7 @@ function agile_install() {
 
   // Create all needed fields usable for all bundles.
   _agile_create_fields();
-  
+
   // Create vocabulary and terms.
   _agile__creating_vocabulary();
   _agile__creating_vocabulary_terms();
@@ -18,7 +18,7 @@ function agile_install() {
 
 function agile_uninstall() {
   $tickets = EntityType::loadByName('agile_ticket');
-  if(is_object($tickets)) {
+  if (is_object($tickets)) {
     $tickets->delete();
   }
 
@@ -41,7 +41,7 @@ function _agile_entity_ticket_save() {
 
   // Add its properties.
   $entity_type->addProperty('title', "Title", "text", 'title');
-  $entity_type->addProperty('reporter', "Reporter", "text",'author');
+  $entity_type->addProperty('reporter', "Reporter", "text", 'author');
 
   $entity_type->save();
 }
@@ -70,20 +70,6 @@ function _agile_delete_fields() {
 }
 
 function _agile_get_fields_array() {
-//  $fields[] = array(
-//    'field_name' => 'field_ticket_description',
-//    'type' => 'text_long',
-//    'legend' => t('Description'),
-//    'format' => 'full_html',
-//    'instance' => array(
-//      'field_name' => 'field_ticket_description',
-//      'entity_type' => 'agile_ticket',
-//      'bundle' => 'agile_ticket',
-//      'label' => t('Description'),
-//      'required' => TRUE,
-//    ),
-//  );
-
   $fields[] = array(
     'field_name' => 'field_agile_story_points',
     'type' => 'number_integer',
@@ -96,7 +82,7 @@ function _agile_get_fields_array() {
       'required' => TRUE,
     ),
   );
-    
+
   $fields[] = array(
     'field_name' => 'field_agile_ticket_owner',
     'type' => 'entityreference',
@@ -124,7 +110,7 @@ function _agile_get_fields_array() {
       'required' => TRUE,
     ),
   );
-  
+
   $fields[] = array(
     'field_name' => 'field_agile_ticket_parent',
     'type' => 'entityreference',
@@ -152,7 +138,7 @@ function _agile_get_fields_array() {
       ),
     ),
   );
-  
+
   $fields[] = array(
     'field_name' => 'field_agile_ticket_children',
     'type' => 'entityreference',
@@ -180,7 +166,7 @@ function _agile_get_fields_array() {
       ),
     ),
   );
-  
+
   return $fields;
 }
 
@@ -191,21 +177,21 @@ function _agile__creating_vocabulary() {
     'description' => t('Vocabulary that describes the different kinds of tickets Agile has.'),
     'machine_name' => 'agile_ticket_types',
   );
-  
+
   $vocabulary_list[] = array(
     'name' => t('Agile Ticket Status Values'),
     'description' => t('Describes the state/position of the ticket in the life cicle of the agile project.'),
     'machine_name' => 'agile_ticket_status',
   );
-  
+
   foreach ($vocabulary_list as $vocabulary) {
     taxonomy_vocabulary_save($vocabulary);
-  }  
+  }
 }
 
 function _agile__creating_vocabulary_terms() {
   $term_list = _agile__vocabulary_term_list();
-  foreach($term_list as $term) {
+  foreach ($term_list as $term) {
     taxonomy_term_save($term);
   }
 }
@@ -213,100 +199,100 @@ function _agile__creating_vocabulary_terms() {
 function _agile__delete_vocabulary() {
   $vocab = taxonomy_vocabulary_machine_name_load('agile_ticket_types');
   taxonomy_vocabulary_delete($vocab->vid);
-  
+
   $vocab_status = taxonomy_vocabulary_machine_name_load('agile_ticket_status');
   taxonomy_vocabulary_delete($vocab_status->vid);
 }
 
 function _agile__vocabulary_term_list() {
-  $vocab = taxonomy_vocabulary_machine_name_load('agile_ticket_types'); 
-  $vocab_status = taxonomy_vocabulary_machine_name_load('agile_ticket_status'); 
+  $vocab = taxonomy_vocabulary_machine_name_load('agile_ticket_types');
+  $vocab_status = taxonomy_vocabulary_machine_name_load('agile_ticket_status');
   $term_list = array();
-  $term_list[] = (object)array(
-    'name' => t('Project'),
-    'description' => t('Main ticket that represents the entirety of the Agile effort.'),
-    'vid' => $vocab->vid,
+  $term_list[] = (object) array(
+            'name' => t('Project'),
+            'description' => t('Main ticket that represents the entirety of the Agile effort.'),
+            'vid' => $vocab->vid,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Story'),
-    'description' => t('Defines functionality described in discrete pieces as told candidaly by the client.'),
-    'vid' => $vocab->vid,
+
+  $term_list[] = (object) array(
+            'name' => t('Story'),
+            'description' => t('Defines functionality described in discrete pieces as told candidaly by the client.'),
+            'vid' => $vocab->vid,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Task'),
-    'description' => t('Step to be completed in order to satisfy the Story.'),
-    'vid' => $vocab->vid,
+
+  $term_list[] = (object) array(
+            'name' => t('Task'),
+            'description' => t('Step to be completed in order to satisfy the Story.'),
+            'vid' => $vocab->vid,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Defect'),
-    'description' => t('Functionality not met that needs to be reworked or fixed.'),
-    'vid' => $vocab->vid,
+
+  $term_list[] = (object) array(
+            'name' => t('Defect'),
+            'description' => t('Functionality not met that needs to be reworked or fixed.'),
+            'vid' => $vocab->vid,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Enhancement'),
-    'description' => t('Functionality originally left out of the story that is now being introduced as an extra effort.'),
-    'vid' => $vocab->vid,
+
+  $term_list[] = (object) array(
+            'name' => t('Enhancement'),
+            'description' => t('Functionality originally left out of the story that is now being introduced as an extra effort.'),
+            'vid' => $vocab->vid,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('New'),
-    'description' => t('The ticket has just being created and it\'s at rest.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 0,
+
+  $term_list[] = (object) array(
+            'name' => t('New'),
+            'description' => t('The ticket has just being created and it\'s at rest.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 0,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('In Progress'),
-    'description' => t('Work has started and it\'s not yet done.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 1,
+
+  $term_list[] = (object) array(
+            'name' => t('In Progress'),
+            'description' => t('Work has started and it\'s not yet done.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 1,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Blocked'),
-    'description' => t('Work cannot advance until some dependency is met.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 2,
+
+  $term_list[] = (object) array(
+            'name' => t('Blocked'),
+            'description' => t('Work cannot advance until some dependency is met.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 2,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Development Complete'),
-    'description' => t('All work is done and ticket is ready for code review.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 3,
+
+  $term_list[] = (object) array(
+            'name' => t('Development Complete'),
+            'description' => t('All work is done and ticket is ready for code review.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 3,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Ready for QA'),
-    'description' => t('The ticket passed for code review and is ready to be tested.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 4,
+
+  $term_list[] = (object) array(
+            'name' => t('Ready for QA'),
+            'description' => t('The ticket passed for code review and is ready to be tested.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 4,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Complete'),
-    'description' => t('Ticket has passed all stages and it\'s ready for deployment.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 5,
+
+  $term_list[] = (object) array(
+            'name' => t('Complete'),
+            'description' => t('Ticket has passed all stages and it\'s ready for deployment.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 5,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Cancelled'),
-    'description' => t('Work on the ticket stops completely. A good reason needs to be entered in the comments.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 6,
+
+  $term_list[] = (object) array(
+            'name' => t('Cancelled'),
+            'description' => t('Work on the ticket stops completely. A good reason needs to be entered in the comments.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 6,
   );
-  
-  $term_list[] = (object)array(
-    'name' => t('Duplicated'),
-    'description' => t('Another ticket with the same Acceptance Criteria exists. This ticket can be marked as part of the original one.'),
-    'vid' => $vocab_status->vid,
-    'weight' => 7,
+
+  $term_list[] = (object) array(
+            'name' => t('Duplicated'),
+            'description' => t('Another ticket with the same Acceptance Criteria exists. This ticket can be marked as part of the original one.'),
+            'vid' => $vocab_status->vid,
+            'weight' => 7,
   );
-  
+
   return $term_list;
 }

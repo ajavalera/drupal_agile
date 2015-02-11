@@ -15,18 +15,12 @@ function agile_field_extra_fields() {
       'description' => t('The main identifier of the ticket'),
       'weight' => -1,
     ),
-//    'uid' => array(
-//      'label' => t('Owner'),
-//      'description' => t('The user responsible for the advancement of this ticket'),
-//      'weight' => 0,
-//    ),
   );
   
   return $fields;
 }
 
 function agile_entity_info_alter(&$entity_info) {
-//  debug($entity_info['agile_ticket']);
   $entity_info['agile_ticket']['access callback'] = "agile_project_access";
 }
 

@@ -1,0 +1,61 @@
+<?php
+/**
+ * @file
+ * 
+ */
+
+/**
+ * 
+ */
+function agile_field_extra_fields() {
+  $fields = array();
+  $fields['agile_ticket']['agile_ticket'] = array(
+    'title' => array(
+      'label' => t('Ticket Title'),
+      'description' => t('The main identifier of the ticket'),
+      'weight' => -1,
+    ),
+//    'uid' => array(
+//      'label' => t('Owner'),
+//      'description' => t('The user responsible for the advancement of this ticket'),
+//      'weight' => 0,
+//    ),
+  );
+  
+  return $fields;
+}
+
+function agile_entity_info_alter(&$entity_info) {
+//  debug($entity_info['agile_ticket']);
+  $entity_info['agile_ticket']['access callback'] = "agile_project_access";
+}
+
+function agile_project_access($op, $entity_or_bundle, $account, $entity_type_name) {
+  global $user;
+  $account = user_load($user->uid);
+  
+  switch($op) {
+    case 'update' :
+      return agile__check_update_permissions($op, $entity_or_bundle, $account, $entity_type_name);
+      
+    default :
+      return eck__entity_access($op, $entity_or_bundle, $account, $entity_type_name);
+      
+  }
+   
+  return FALSE;
+}
+
+function agile__check_update_permissions($op, $entity_or_bundle, $account, $entity_type_name) {
+  if(is_array($entity_or_bundle->field_agile_ticket_owner['und'])) {
+    $haystack = $entity_or_bundle->field_agile_ticket_owner['und'];
+
+    foreach($haystack as $owners) {
+      if($account->uid == $owners['target_id']) {
+        return TRUE;
+      }
+    }
+  }
+  
+  return eck__entity_access($op, $entity_or_bundle, $account, $entity_type_name);
+}

@@ -1,0 +1,11 @@
+name = Agile Items module
+description = Provides entities to be used as agile and scrum items.
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = eck
+dependencies[] = views
+dependencies[] = entityreference
+dependencies[] = taxonomy
+;
